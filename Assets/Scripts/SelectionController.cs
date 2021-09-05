@@ -57,7 +57,6 @@ public class SelectionController : MonoBehaviour
         {
             if (hit.transform != null)
             {
-                Debug.Log(hit.transform.gameObject);
                 return hit.transform.gameObject;
             }
         }
