@@ -23,12 +23,8 @@ public class FactionsController : MonoBehaviour
     {
         Faction[] factions = FindObjectsOfType<Faction>();
 
-        Debug.Log("FACTIONID " + factionId);
-
         foreach (Faction f in factions)
         {
-            Debug.Log("FACTION F " + f);
-
             if (f.factionId == factionId.faction)
             {
                 return f;

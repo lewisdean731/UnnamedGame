@@ -21,6 +21,6 @@ public class DistrictController : MonoBehaviour
     // Update is called once per frame
     void UpdateInterval()
     {
-        Debug.Log("DISTRICT CONTROLLER" + controllingFaction);
+
     }
 }

@@ -50,8 +50,6 @@ public class SettlementController : MonoBehaviour
 
     void LoadSettlement(SettlementData data)
     {
-        Debug.Log("Loading Settlement: " + data.name);
-
         district = transform.parent.GetComponent<DistrictController>();
 
         population = data.population;
@@ -80,16 +78,12 @@ public class SettlementController : MonoBehaviour
     void UpdateInterval()
     {
 
-        Debug.Log("SETTDISTCONTROLLER " + district.controllingFaction);
-
-
         // Consume food
         suppliesFood = (int)Mathf.Round(suppliesFood - (population / (GameManager.dayLengthInSeconds / updateTimeInSeconds)));
         if (suppliesFood < population * 3)
         {
             SettlementLowFood(data.id);
         }
-        Debug.Log("Updated " + data.name + " food supplies: " + suppliesFood);
 
         // Produce money
         productionMoney = (int)Mathf.Round((population * district.controllingFaction.policies.popTaxRate) / (GameManager.dayLengthInSeconds / updateTimeInSeconds));
