@@ -1,0 +1,8 @@
+.bgGreyTransparent {
+    background-color: rgba(53, 59, 72, 0.82);
+}
+
+.textWhite {
+    color: rgb(245, 246, 250);
+    font-size: 14px;
+}

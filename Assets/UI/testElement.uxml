@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/testUSS.uss?fileID=7433441132597879392&amp;guid=71bc2e0a54f1ba546aef1303b63ae97b&amp;type=3#testUSS" />
+    <ui:VisualElement name="Screen" style="flex-direction: row; align-items: flex-start; justify-content: space-between; flex-grow: 1; background-color: rgba(255, 0, 0, 0);">
+        <ui:VisualElement name="Left" style="flex-grow: 1; background-color: rgba(255, 0, 216, 0);">
+            <ui:VisualElement name="Filler" style="flex-grow: 1;" />
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:VisualElement class="bgGreyTransparent" style="flex-direction: column; padding-left: 15px; padding-right: 15px; padding-top: 15px; padding-bottom: 15px; flex-grow: 0;">
+                    <ui:ProgressBar title="Day Progress" name="DayProgress" />
+                    <ui:VisualElement style="flex-direction: row; flex-grow: 0; align-items: stretch; justify-content: space-between;">
+                        <ui:Button text="x0.5" display-tooltip-when-elided="true" name="btnTimeScalex05" />
+                        <ui:Button text="x1" display-tooltip-when-elided="true" name="btnTimeScalex1" />
+                        <ui:Button text="x2" display-tooltip-when-elided="true" name="btnTimeScalex2" />
+                        <ui:Button text="x3" display-tooltip-when-elided="true" name="btnTimeScalex3" />
+                        <ui:Button text="x4" display-tooltip-when-elided="true" name="btnTimeScalex4" />
+                        <ui:Button text="x5" display-tooltip-when-elided="true" name="btnTimeScalex5" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="Filler" style="flex-grow: 1;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Middle" style="flex-grow: 2; background-color: rgba(0, 255, 14, 0);">
+            <ui:VisualElement name="Filler" style="flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Right" style="flex-grow: 1; background-color: rgba(1, 0, 255, 0); flex-shrink: 1; opacity: 1;">
+            <ui:VisualElement name="Filler" style="min-width: auto; flex-direction: row-reverse;">
+                <ui:VisualElement class="bgGreyTransparent" style="justify-content: center; align-items: flex-end; flex-direction: column; flex-wrap: nowrap; flex-basis: auto; flex-shrink: 1; flex-grow: 0; margin-left: 0; width: 120px;">
+                    <ui:Label text="Time Elapsed" name="lbElapsedTime" class="textWhite" />
+                    <ui:Label text="0" name="lblSeconds" style="color: rgb(245, 246, 250); font-size: 14px;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Filler" style="flex-grow: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Filler" style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
