@@ -16,7 +16,10 @@ public class DistrictController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.gameObject.AddComponent<UniqueID>();
+        uniqueId = this.gameObject.GetComponent<UniqueID>();
         id = uniqueId.guid;
+
         InvokeRepeating("UpdateInterval", GameManager.updateIntervalDistrict, GameManager.updateIntervalDistrict);
     }
 

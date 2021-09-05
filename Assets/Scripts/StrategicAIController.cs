@@ -5,7 +5,7 @@ using UnityEngine;
 public class StrategicAIController : MonoBehaviour
 {
 
-    int[] controlledSettlements = { 0 };
+    string[] controlledSettlements = { };
 
     // Start is called before the first frame update
     private void Start()
@@ -24,34 +24,30 @@ public class StrategicAIController : MonoBehaviour
 
     }
 
-    private void OnSettlementLowFood(int id)
+    private void OnSettlementLowFood(string id)
     {
-        if (controlledSettlements.Contains(id))
-        {
-            Debug.Log("Settlement " + id + " Reports low on food!");
+        Debug.Log("Settlement " + id + " Reports low on food!");
 
-            // Work out 
+        // Work out 
 
-            StartCoroutine(testWaiter());
-
-        }
+        StartCoroutine(testWaiter(id));
     }
 
     // For testing
-    IEnumerator testWaiter()
+    IEnumerator testWaiter(string id)
     {
-        SettlementDispatchFood(0, 1000);
+        SettlementDispatchFood(id, 1000);
 
         yield return new WaitForSeconds(10);
 
-        SettlementRecieveFood(0, 1000);
+        SettlementRecieveFood(id, 1000);
     }
 
-    private void SettlementDispatchFood(int id, int food)
+    private void SettlementDispatchFood(string id, int food)
     {
         GameEvents.current.SettlementDispatchFood(id, 1000);
     }
-    private void SettlementRecieveFood(int id, int food)
+    private void SettlementRecieveFood(string id, int food)
     {
         GameEvents.current.SettlementRecieveFood(id, 1000);
     }

@@ -31,7 +31,11 @@ public class FarmController : MonoBehaviour
     void LoadFarm()
     {
         district = transform.parent.GetComponent<DistrictController>();
+
+        this.gameObject.AddComponent<UniqueID>();
+        uniqueId = this.gameObject.GetComponent<UniqueID>();
         id = uniqueId.guid;
+
         suppliesFoodCap = 1000;
     }
 

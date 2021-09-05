@@ -34,8 +34,8 @@ public class GameEvents : MonoBehaviour
 
     // Settlement
 
-    public event Action<int> onSettlementLowFood;
-    public void SettlementLowFood(int id)
+    public event Action<string> onSettlementLowFood;
+    public void SettlementLowFood(string id)
     {
         if (onSettlementLowFood != null)
         {
@@ -43,8 +43,8 @@ public class GameEvents : MonoBehaviour
         }
     }
 
-    public event Action<int, int> onSettlementDispatchFood;
-    public void SettlementDispatchFood(int id, int food)
+    public event Action<string, int> onSettlementDispatchFood;
+    public void SettlementDispatchFood(string id, int food)
     {
         if (onSettlementDispatchFood != null)
         {
@@ -52,8 +52,8 @@ public class GameEvents : MonoBehaviour
         }
     }
 
-    public event Action<int, int> onSettlementRecieveFood;
-    public void SettlementRecieveFood(int id, int food)
+    public event Action<string, int> onSettlementRecieveFood;
+    public void SettlementRecieveFood(string id, int food)
     {
         if (onSettlementRecieveFood != null)
         {
@@ -62,9 +62,9 @@ public class GameEvents : MonoBehaviour
     }
 
     // Farm
-    public event Action<int, int> onFarmDispatchFood;
+    public event Action<string, int> onFarmDispatchFood;
 
-    public void FarmDispatchFood(int id, int food)
+    public void FarmDispatchFood(string id, int food)
     {
         if (onFarmDispatchFood != null)
         {
