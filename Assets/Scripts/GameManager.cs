@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     public static int updateIntervalDistrict = 5;
     public static int updateIntervalSettlement = 5;
+    public static int updateIntervalFarm = 5;
 
 
 

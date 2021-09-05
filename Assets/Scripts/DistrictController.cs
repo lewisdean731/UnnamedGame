@@ -3,7 +3,8 @@ using UnityEngine;
 public class DistrictController : MonoBehaviour
 {
     public new string name;
-    public int id;
+    public UniqueID uniqueId;
+    private string id;
     public string description;
     public Faction controllingFaction;
     public Faction[] contestingFactions;
@@ -15,6 +16,7 @@ public class DistrictController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        id = uniqueId.guid;
         InvokeRepeating("UpdateInterval", GameManager.updateIntervalDistrict, GameManager.updateIntervalDistrict);
     }
 
