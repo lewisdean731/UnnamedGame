@@ -25,32 +25,32 @@ public class StrategicAIController : MonoBehaviour
 
     }
 
-    private void OnSettlementLowFood(string id)
+    private void OnSettlementLowFood(SettlementController settlement)
     {
-        Debug.Log("Settlement " + id + " Reports low on food!");
+        Debug.Log("Settlement " + settlement + " Reports low on food!");
 
         // Work out 
 
-        StartCoroutine(testWaiter(id));
+        StartCoroutine(testWaiter(settlement));
     }
 
     // For testing
-    IEnumerator testWaiter(string id)
+    IEnumerator testWaiter(SettlementController settlement)
     {
-        SettlementDispatchFood(id, 1000);
+        SettlementDispatchFood(settlement, 1000);
 
         yield return new WaitForSeconds(10);
 
-        SettlementRecieveFood(id, 1000);
+        SettlementRecieveFood(settlement, 1000);
     }
 
-    private void SettlementDispatchFood(string id, int food)
+    private void SettlementDispatchFood(SettlementController settlement, int food)
     {
-        GameEvents.current.SettlementDispatchFood(id, 1000);
+        GameEvents.current.SettlementDispatchFood(settlement, 1000);
     }
-    private void SettlementRecieveFood(string id, int food)
+    private void SettlementRecieveFood(SettlementController settlement, int food)
     {
-        GameEvents.current.SettlementRecieveFood(id, 1000);
+        GameEvents.current.SettlementRecieveFood(settlement, 1000);
     }
 
     // Farm
@@ -59,6 +59,10 @@ public class StrategicAIController : MonoBehaviour
         GameEvents.current.FarmDispatchFood(farm, food);
 
         // TODO Spawn a truck with 1000 food with distination of nearest settlement
+        Transform nearestSettlement = FinderUtil.FindNearestControlledSettlement(farm.gameObject, farm.district.controllingFaction);
 
+        // Until resource transporting is a thing
+        SettlementController sc = nearestSettlement.gameObject.GetComponent<SettlementController>();
+        GameEvents.current.SettlementRecieveFood(sc, food);
     }
 }

@@ -34,30 +34,30 @@ public class GameEvents : MonoBehaviour
 
     // Settlement
 
-    public event Action<string> onSettlementLowFood;
-    public void SettlementLowFood(string id)
+    public event Action<SettlementController> onSettlementLowFood;
+    public void SettlementLowFood(SettlementController settlement)
     {
         if (onSettlementLowFood != null)
         {
-            onSettlementLowFood(id);
+            onSettlementLowFood(settlement);
         }
     }
 
-    public event Action<string, int> onSettlementDispatchFood;
-    public void SettlementDispatchFood(string id, int food)
+    public event Action<SettlementController, int> onSettlementDispatchFood;
+    public void SettlementDispatchFood(SettlementController settlement, int food)
     {
         if (onSettlementDispatchFood != null)
         {
-            onSettlementDispatchFood(id, food);
+            onSettlementDispatchFood(settlement, food);
         }
     }
 
-    public event Action<string, int> onSettlementRecieveFood;
-    public void SettlementRecieveFood(string id, int food)
+    public event Action<SettlementController, int> onSettlementRecieveFood;
+    public void SettlementRecieveFood(SettlementController settlement, int food)
     {
         if (onSettlementRecieveFood != null)
         {
-            onSettlementRecieveFood(id, food);
+            onSettlementRecieveFood(settlement, food);
         }
     }
 

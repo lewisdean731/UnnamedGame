@@ -62,7 +62,7 @@ public class SettlementController : MonoBehaviour
         suppliesFood = (int)Mathf.Round(suppliesFood - (population / (GameManager.dayLengthInSeconds / updateTimeInSeconds)));
         if (suppliesFood < population * 3)
         {
-            SettlementLowFood(id);
+           // SettlementLowFood(id);
         }
 
         // Produce money
@@ -77,14 +77,14 @@ public class SettlementController : MonoBehaviour
 
     }
 
-    private void SettlementLowFood(string id)
+    private void SettlementLowFood(SettlementController id)
     {
         GameEvents.current.SettlementLowFood(id);
     }
 
-    private void OnSettlementDispatchFood(string eventId, int food)
+    private void OnSettlementDispatchFood(SettlementController settlement, int food)
     {
-        if (eventId == id)
+        if (settlement == this)
         {
             suppliesFood -= food;
             Debug.Log("Settlement: " + name + " Dispatched " + food + " food supplies");
@@ -92,9 +92,9 @@ public class SettlementController : MonoBehaviour
         }
     }
 
-    private void OnSettlementRecieveFood(string eventId, int food)
+    private void OnSettlementRecieveFood(SettlementController settlement, int food)
     {
-        if (eventId == id)
+        if (settlement == this)
         {
             suppliesFood += food;
             Debug.Log("Settlement: " + name + " Recieved " + food + " food supplies");
