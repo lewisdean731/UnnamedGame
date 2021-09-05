@@ -61,6 +61,17 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+    // Farm
+    public event Action<int, int> onFarmDispatchFood;
+
+    public void FarmDispatchFood(int id, int food)
+    {
+        if (onFarmDispatchFood != null)
+        {
+            onFarmDispatchFood(id, food);
+        }
+    }
+
     // Resources
 
     public event Action<Faction, string, int> onAlterFactionResourceVal;
