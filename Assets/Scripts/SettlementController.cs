@@ -6,28 +6,28 @@ public class SettlementController : MonoBehaviour
     public SettlementData data;
     public DistrictController district;
 
-    private int population;
+    public int population;
 
-    private int suppliesAmmo;
-    private int suppliesFood;
-    private int suppliesFuel;
-    private int suppliesMaterials;
+    public int suppliesAmmo;
+    public int suppliesFood;
+    public int suppliesFuel;
+    public int suppliesMaterials;
 
-    private int productionMoney;
+    public int productionMoney;
 
-    private int morale;
-    private bool playerControlled;
+    public int morale;
+    public bool playerControlled;
 
     // Special buildings?
-    private int policePresenceLevel;
-    private int armyPresenceLevel;
-    private int hospitalLevel;
-    private int schoolLevel;
+    public int policePresenceLevel;
+    public int armyPresenceLevel;
+    public int hospitalLevel;
+    public int schoolLevel;
 
-    private string[] tags;
+    public string[] tags;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
 
         if (data != null)
@@ -48,7 +48,7 @@ public class SettlementController : MonoBehaviour
         GameEvents.current.onSettlementRecieveFood -= OnSettlementRecieveFood;
     }
 
-    void LoadSettlement(SettlementData data)
+    private void LoadSettlement(SettlementData data)
     {
         district = transform.parent.GetComponent<DistrictController>();
 
@@ -75,7 +75,7 @@ public class SettlementController : MonoBehaviour
     }
 
     // Invoked every updateTimeInSeconds seconds / Time.timeScale
-    void UpdateInterval()
+    private void UpdateInterval()
     {
 
         // Consume food
@@ -92,17 +92,17 @@ public class SettlementController : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
 
     }
 
-    void SettlementLowFood(int id)
+    private void SettlementLowFood(int id)
     {
         GameEvents.current.SettlementLowFood(id);
     }
 
-    void OnSettlementDispatchFood(int id, int food)
+    private void OnSettlementDispatchFood(int id, int food)
     {
         if (id == data.id)
         {
@@ -112,7 +112,7 @@ public class SettlementController : MonoBehaviour
         }
     }
 
-    void OnSettlementRecieveFood(int id, int food)
+    private void OnSettlementRecieveFood(int id, int food)
     {
         if (id == data.id)
         {
