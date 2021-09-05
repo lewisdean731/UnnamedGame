@@ -62,13 +62,23 @@ public class GameEvents : MonoBehaviour
     }
 
     // Farm
-    public event Action<string, int> onFarmDispatchFood;
+    public event Action<FarmController, int> onFarmReadyToDispatchFood;
 
-    public void FarmDispatchFood(string id, int food)
+    public void FarmReadyToDispatchFood(FarmController farm, int food)
+    {
+        if (onFarmReadyToDispatchFood != null)
+        {
+            onFarmReadyToDispatchFood(farm, food);
+        }
+    }
+
+    public event Action<FarmController, int> onFarmDispatchFood;
+
+    public void FarmDispatchFood(FarmController farm, int food)
     {
         if (onFarmDispatchFood != null)
         {
-            onFarmDispatchFood(id, food);
+            onFarmDispatchFood(farm, food);
         }
     }
 

@@ -19,13 +19,15 @@ public class FarmController : MonoBehaviour
     {
         LoadFarm();
 
+        GameEvents.current.onFarmDispatchFood += OnFarmDispatchFood;
+
         InvokeRepeating("UpdateInterval", GameManager.updateIntervalFarm, GameManager.updateIntervalFarm);
 
     }
 
     private void OnDestroy()
     {
-
+        GameEvents.current.onFarmDispatchFood -= OnFarmDispatchFood;
     }
 
     void LoadFarm()
@@ -43,7 +45,7 @@ public class FarmController : MonoBehaviour
     void UpdateInterval()
     {
         // Produce food
-        suppliesFood = (int)Mathf.Round((level * 100 * health) / (GameManager.dayLengthInSeconds / GameManager.updateIntervalFarm));
+        suppliesFood += (int)Mathf.Round((level * 100 * health) / (GameManager.dayLengthInSeconds / GameManager.updateIntervalFarm));
         if(suppliesFood > suppliesFoodCap)
         {
             suppliesFood = suppliesFoodCap;
@@ -52,7 +54,15 @@ public class FarmController : MonoBehaviour
         // When farm >= 1000 food dispatch it to nearest settlement
         if( suppliesFood >= 1000)
         {
+            GameEvents.current.FarmReadyToDispatchFood(this, suppliesFood);
+        }
+    }
 
+    void OnFarmDispatchFood(FarmController farm, int food)
+    {
+        if(farm == this)
+        {
+            suppliesFood -= food;
         }
     }
 }

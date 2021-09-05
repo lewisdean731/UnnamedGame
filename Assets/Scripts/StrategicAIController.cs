@@ -11,6 +11,7 @@ public class StrategicAIController : MonoBehaviour
     private void Start()
     {
         GameEvents.current.onSettlementLowFood += OnSettlementLowFood;
+        GameEvents.current.onFarmReadyToDispatchFood += OnFarmReadyToDispatchFood;
     }
 
     private void OnDestroy()
@@ -50,5 +51,14 @@ public class StrategicAIController : MonoBehaviour
     private void SettlementRecieveFood(string id, int food)
     {
         GameEvents.current.SettlementRecieveFood(id, 1000);
+    }
+
+    // Farm
+    private void OnFarmReadyToDispatchFood(FarmController farm, int food)
+    {
+        GameEvents.current.FarmDispatchFood(farm, food);
+
+        // TODO Spawn a truck with 1000 food with distination of nearest settlement
+
     }
 }
