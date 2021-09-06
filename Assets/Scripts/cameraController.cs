@@ -4,6 +4,10 @@ public class cameraController : MonoBehaviour
 {
     public Transform cameraTransform;
 
+    public float minHeight;
+    public float maxHeight;
+    public float zoomAmountScaler;
+
     public float movementSpeed;
     public float movementTime;
     public float rotationAmount;
@@ -31,6 +35,10 @@ public class cameraController : MonoBehaviour
     {
         HandleMouseInput();
         HandleMovementInput();
+
+        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
+        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
     }
 
     void HandleMouseInput()
@@ -38,7 +46,7 @@ public class cameraController : MonoBehaviour
         // Scroll Wheel Zoom
         if (Input.mouseScrollDelta.y != 0)
         {
-            newZoom += Input.mouseScrollDelta.y * zoomAmount;
+            CalcZoom(Input.mouseScrollDelta.y);
         }
 
         // Right-click and drag movement
@@ -122,17 +130,22 @@ public class cameraController : MonoBehaviour
         // Zoom
         if (Input.GetKey(KeyCode.R))
         {
-            newZoom += zoomAmount;
+            CalcZoom(1);
         }
         if (Input.GetKey(KeyCode.F))
         {
-            newZoom -= zoomAmount;
+            CalcZoom(-1);
         }
+    }
+    private void CalcZoom(float zoomValue = 1)
+    {
+        // Scale zooming for closer to ground
+        zoomAmountScaler = ((newZoom.y - minHeight) / maxHeight * 100);
+        if (zoomAmountScaler < 0.05f) zoomAmountScaler = 0.05f;
 
-        //Input.mouseScrollDelta.y
-
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
-        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
+        if (zoomAmountScaler >= 0.06f || (zoomAmountScaler >= 0.05f && zoomValue < 0))
+        {
+            newZoom += (zoomValue * zoomAmountScaler) * zoomAmount;
+        }
     }
 }
