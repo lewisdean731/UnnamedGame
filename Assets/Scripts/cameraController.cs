@@ -137,13 +137,29 @@ public class cameraController : MonoBehaviour
             CalcZoom(-1);
         }
     }
+
     private void CalcZoom(float zoomValue = 1)
     {
-        // Scale zooming for closer to ground
-        zoomAmountScaler = ((newZoom.y - minHeight) / maxHeight * 100);
-        if (zoomAmountScaler < 0.05f) zoomAmountScaler = 0.05f;
+        // Zoom slower when closer to zoom limits
+        // See https://www.desmos.com/calculator and copy the below
+        // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\ x^{2}\ +\ x\ \right)}{10}
+        var maxmin = maxHeight + minHeight;
+        var maxmin2 = maxmin * maxmin;
+        zoomAmountScaler = (-minHeight - maxmin / maxmin2 * (newZoom.y * newZoom.y) + newZoom.y) / 10;
 
-        if (zoomAmountScaler >= 0.06f || (zoomAmountScaler >= 0.05f && zoomValue < 0))
+        if (zoomAmountScaler < 0.05f)
+        {
+            zoomAmountScaler = 0.05f;
+        }
+
+        // Allow scale out
+        if (newZoom.y + 1 < maxHeight && zoomValue < 0)
+        {
+            newZoom += (zoomValue * zoomAmountScaler) * zoomAmount;
+        }
+
+        // Allow scale in
+        else if (newZoom.y - 1 > minHeight && zoomValue > 0)
         {
             newZoom += (zoomValue * zoomAmountScaler) * zoomAmount;
         }
