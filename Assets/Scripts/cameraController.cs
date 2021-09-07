@@ -9,6 +9,7 @@ public class cameraController : MonoBehaviour
     public float zoomAmountScaler;
 
     public float movementSpeed;
+    public float movementSpeedFast;
     public float movementTime;
     public float rotationAmount;
     public Vector3 zoomAmount;
@@ -100,21 +101,24 @@ public class cameraController : MonoBehaviour
     void HandleMovementInput()
     {
         // Movement
+
+        float moveSpeed = Input.GetKey(KeyCode.LeftShift) ? movementSpeedFast : movementSpeed;
+
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            newPosition += (transform.forward * movementSpeed);
+            newPosition += (transform.forward * moveSpeed);
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            newPosition += (transform.forward * -movementSpeed);
+            newPosition += (transform.forward * -moveSpeed);
         }
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            newPosition += (transform.right * -movementSpeed);
+            newPosition += (transform.right * -moveSpeed);
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            newPosition += (transform.right * movementSpeed);
+            newPosition += (transform.right * moveSpeed);
         }
 
         // Rotation
