@@ -29,9 +29,17 @@ public class SelectionController : MonoBehaviour
 
     private void OnMouse0Down()
     {
-        var raycastSelected = SelectionRaycast();
-        if (raycastSelected != null)
+        RaycastHit raycastHit = RaycastMousePos();
+        if (raycastHit.transform?.gameObject)
         {
+            GameObject hitObj = raycastHit.transform.gameObject;
+
+            if (hitObj.tag == "TERRAIN")
+            {
+                Debug.Log("Selected Hex Cell" + HexCoordinates.FromPosition(raycastHit.point));
+                return;
+            }
+
             if (!Input.GetKey(KeyCode.LeftShift))
             {
                 foreach (GameObject g in selected)
@@ -40,28 +48,21 @@ public class SelectionController : MonoBehaviour
                 }
                 selected.Clear();
             }
-            if (!selected.Contains(raycastSelected))
+
+            if (!selected.Contains(hitObj))
             {
-                ApplyOutline(raycastSelected);
-                selected.Add(raycastSelected);
+                ApplyOutline(hitObj);
+                selected.Add(hitObj);
             }
         }
     }
 
-    private GameObject? SelectionRaycast()
+    private RaycastHit RaycastMousePos()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform != null)
-            {
-                return hit.transform.gameObject;
-            }
-        }
-        return null;
-
+        Physics.Raycast(ray, out hit);
+        return hit;
     }
 
     private void ApplyOutline(GameObject g)
