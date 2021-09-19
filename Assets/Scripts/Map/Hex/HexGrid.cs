@@ -41,7 +41,13 @@ public class HexGrid : MonoBehaviour
 
 	void Start()
 	{
+		GameEvents.current.onSelectCell += OnSelectCell;
 		hexMesh.Triangulate(cells);
+	}
+
+	private void OnDestroy()
+	{
+		GameEvents.current.onSelectCell -= OnSelectCell;
 	}
 
 	void CreateCell(int x, int z, int i)
@@ -91,13 +97,29 @@ public class HexGrid : MonoBehaviour
 		label.text = cell.coordinates.ToStringOnSeparateLines();
 	}
 
-	public void ColorCell(Vector3 position, Color color)
-	{
+	public HexCell GetCell(Vector3 position)
+    {
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
-		HexCell cell = cells[index];
-		cell.color = color;
-		hexMesh.Triangulate(cells);
+		return cells[index];
+	}
 
+	void OnSelectCell(Vector3 position)
+	{
+		HexCell cell = GetCell(position);
+		if(cell != null)
+        {
+			GameEvents.current.CellSelected(cell);
+        }
+	}
+
+	public void ColorCell(HexCell cell, Color color)
+	{
+		cell.color = color;
+	}
+
+	public void Refresh()
+	{
+		hexMesh.Triangulate(cells);
 	}
 }

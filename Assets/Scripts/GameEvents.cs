@@ -34,12 +34,30 @@ public class GameEvents : MonoBehaviour
 
     // Map 
 
-    public event Action<Vector3> onColorCell;
-    public void ColorCell(Vector3 position)
+    public event Action<Vector3> onSelectCell;
+    public void SelectCell(Vector3 position)
+    {
+        if (onSelectCell != null)
+        {
+            onSelectCell(position);
+        }
+    }
+
+    public event Action<HexCell> onCellSelected;
+    public void CellSelected(HexCell cell)
+    {
+        if (onCellSelected != null)
+        {
+            onCellSelected(cell);
+        }
+    }
+
+    public event Action<HexCell> onColorCell;
+    public void ColorCell(HexCell cell)
     {
         if (onColorCell != null)
         {
-            onColorCell(position);
+            onColorCell(cell);
         }
     }
 

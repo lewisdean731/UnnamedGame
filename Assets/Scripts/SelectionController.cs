@@ -36,7 +36,7 @@ public class SelectionController : MonoBehaviour
 
             if (hitObj.tag == "TERRAIN")
             {
-                GameEvents.current.ColorCell(raycastHit.point);
+                GameEvents.current.SelectCell(raycastHit.point);
                 return;
             }
 
