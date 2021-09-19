@@ -59,14 +59,28 @@ public class HexGrid : MonoBehaviour
 		cell.color = defaultColor;
 
 		// Set Neighbour Directions
-
 		if (x > 0)
 		{
 			cell.SetNeighbor(HexDirection.W, cells[i - 1]);
 		}
-		if ((z > 0) && ((z & 1) == 0))
+		if (z > 0)
 		{
-			cell.SetNeighbor(HexDirection.SE, cells[i - width]);
+			if ((z & 1) == 0)
+			{
+				cell.SetNeighbor(HexDirection.SE, cells[i - width]);
+				if (x > 0)
+				{
+					cell.SetNeighbor(HexDirection.SW, cells[i - width - 1]);
+				}
+			}
+			else
+			{
+				cell.SetNeighbor(HexDirection.SW, cells[i - width]);
+				if (x < width - 1)
+				{
+					cell.SetNeighbor(HexDirection.SE, cells[i - width + 1]);
+				}
+			}
 		}
 
 		// Set Cell Text
