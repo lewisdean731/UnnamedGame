@@ -85,8 +85,9 @@ public class HexMesh : MonoBehaviour
 		Vector3 v4 = v2 + bridge;
 		v3.y = v4.y = neighbor.Elevation * HexMetrics.elevationStep;
 
-		AddQuad(v1, v2, v3, v4);
-		AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+		TriangulateBridgeTerraces(v1, v2, cell, v3, v4, neighbor);
+		// AddQuad(v1, v2, v3, v4);
+		// AddQuadColorTwoWayBlend(cell.color, neighbor.color);
 
 		HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
 		if (direction <= HexDirection.E && nextNeighbor != null)
@@ -96,6 +97,34 @@ public class HexMesh : MonoBehaviour
 			AddTriangle(v2, v4, v5);
 			AddTriangleColorPerVertex(cell.color, neighbor.color, nextNeighbor.color);
 		}
+	}
+
+	void TriangulateBridgeTerraces(
+		Vector3 beginLeft, Vector3 beginRight, HexCell beginCell,
+		Vector3 endLeft, Vector3 endRight, HexCell endCell
+	)
+	{
+		Vector3 v3 = HexMetrics.TerraceLerpBetweenPoints(beginLeft, endLeft, 1);
+		Vector3 v4 = HexMetrics.TerraceLerpBetweenPoints(beginRight, endRight, 1);
+		Color c2 = HexMetrics.TerraceLerpBetweenColors(beginCell.color, endCell.color, 1);
+
+		AddQuad(beginLeft, beginRight, v3, v4);
+		AddQuadColorTwoWayBlend(beginCell.color, c2);
+
+		for (int i = 2; i < HexMetrics.terraceSteps; i++)
+		{
+			Vector3 v1 = v3;
+			Vector3 v2 = v4;
+			Color c1 = c2;
+			v3 = HexMetrics.TerraceLerpBetweenPoints(beginLeft, endLeft, i);
+			v4 = HexMetrics.TerraceLerpBetweenPoints(beginRight, endRight, i);
+			c2 = HexMetrics.TerraceLerpBetweenColors(beginCell.color, endCell.color, i);
+			AddQuad(v1, v2, v3, v4);
+			AddQuadColorTwoWayBlend(c1, c2);
+		}
+
+		AddQuad(v3, v4, endLeft, endRight);
+		AddQuadColorTwoWayBlend(c2, endCell.color);
 	}
 
 	void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
