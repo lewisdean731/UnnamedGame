@@ -58,6 +58,17 @@ public class HexGrid : MonoBehaviour
 
 		cell.color = defaultColor;
 
+		// Set Neighbour Directions
+
+		if (x > 0)
+		{
+			cell.SetNeighbor(HexDirection.W, cells[i - 1]);
+		}
+		if ((z > 0) && ((z & 1) == 0))
+		{
+			cell.SetNeighbor(HexDirection.SE, cells[i - width]);
+		}
+
 		// Set Cell Text
 		Text label = Instantiate<Text>(cellLabelPrefab);
 		label.rectTransform.SetParent(gridCanvas.transform, false);
@@ -66,12 +77,12 @@ public class HexGrid : MonoBehaviour
 		label.text = cell.coordinates.ToStringOnSeparateLines();
 	}
 
-	public void SelectCell(Vector3 position)
+	public void ColorCell(Vector3 position, Color color)
 	{
 		HexCoordinates coordinates = HexCoordinates.FromPosition(position);
 		int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
 		HexCell cell = cells[index];
-		cell.color = selectedColor;
+		cell.color = color;
 		hexMesh.Triangulate(cells);
 
 	}

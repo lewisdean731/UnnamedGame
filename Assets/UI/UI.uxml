@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/testUSS.uss?fileID=7433441132597879392&amp;guid=71bc2e0a54f1ba546aef1303b63ae97b&amp;type=3#testUSS" />
+    <Style src="project://database/Assets/UI/Styles.uss?fileID=7433441132597879392&amp;guid=71bc2e0a54f1ba546aef1303b63ae97b&amp;type=3#Styles" />
     <ui:VisualElement name="Screen" style="flex-direction: row; align-items: flex-start; justify-content: space-between; flex-grow: 1; background-color: rgba(255, 0, 0, 0);">
         <ui:VisualElement name="Left" style="flex-grow: 1; background-color: rgba(255, 0, 216, 0);">
             <ui:VisualElement name="Filler" style="flex-grow: 1;" />

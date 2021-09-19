@@ -4,7 +4,6 @@ using UnityEngine;
 public class SelectionController : MonoBehaviour
 {
     public List<GameObject> selected;
-    public HexGrid hexGrid;
 
     private void Awake()
     {
@@ -37,7 +36,7 @@ public class SelectionController : MonoBehaviour
 
             if (hitObj.tag == "TERRAIN")
             {
-                hexGrid.SelectCell(raycastHit.point);
+                GameEvents.current.ColorCell(raycastHit.point);
                 return;
             }
 

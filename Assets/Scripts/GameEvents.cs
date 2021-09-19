@@ -32,6 +32,17 @@ public class GameEvents : MonoBehaviour
         }
     }
 
+    // Map 
+
+    public event Action<Vector3> onColorCell;
+    public void ColorCell(Vector3 position)
+    {
+        if (onColorCell != null)
+        {
+            onColorCell(position);
+        }
+    }
+
     // Settlement
 
     public event Action<SettlementController> onSettlementLowFood;
