@@ -67,8 +67,9 @@ public class HexMesh : MonoBehaviour
 		AddTriangleColor(cell.color);
 
 		// Create blend region quad
-		Vector3 v3 = center + HexMetrics.GetFirstCorner(direction);
-		Vector3 v4 = center + HexMetrics.GetSecondCorner(direction);
+		Vector3 bridge = HexMetrics.GetBridge(direction);
+		Vector3 v3 = v1 + bridge;
+		Vector3 v4 = v2 + bridge;
 		AddQuad(v1, v2, v3, v4);
 
 		// Use ourselves if no neighbour in direction e.g. border cell
@@ -76,10 +77,21 @@ public class HexMesh : MonoBehaviour
 		HexCell neighbor = cell.GetNeighbor(direction) ?? cell;
 		HexCell nextNeighbor = cell.GetNeighbor(direction.Next()) ?? cell;
 
-		AddQuadColorPerVertex(
-			cell.color,
+		Color bridgeColor = (cell.color + neighbor.color) * 0.5f;
+		AddQuadColorTwoWayBlend(cell.color, bridgeColor);
+
+		// Create triangles either side of bridges
+		AddTriangle(v1, center + HexMetrics.GetFirstCorner(direction), v3);
+		AddTriangleColorPerVertex(
 			cell.color,
 			(cell.color + prevNeighbor.color + neighbor.color) / 3f,
+			bridgeColor
+		);
+
+		AddTriangle(v2, v4, center + HexMetrics.GetSecondCorner(direction));
+		AddTriangleColorPerVertex(
+			cell.color,
+			bridgeColor,
 			(cell.color + neighbor.color + nextNeighbor.color) / 3f
 		);
 	}
@@ -122,6 +134,13 @@ public class HexMesh : MonoBehaviour
 		triangles.Add(vertexIndex + 1);
 		triangles.Add(vertexIndex + 2);
 		triangles.Add(vertexIndex + 3);
+	}
+	void AddQuadColorTwoWayBlend(Color c1, Color c2)
+	{
+		colors.Add(c1);
+		colors.Add(c1);
+		colors.Add(c2);
+		colors.Add(c2);
 	}
 
 	void AddQuadColorPerVertex(Color c1, Color c2, Color c3, Color c4)
