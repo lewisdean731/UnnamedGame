@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMesh : MonoBehaviour
@@ -197,6 +198,23 @@ public class HexMesh : MonoBehaviour
 			);
 			return;
 		}
+		if (leftCell.GetEdgeType(rightCell) == HexEdgeType.SLOPE_TERRACE)
+		{
+			if (leftCell.Elevation < rightCell.Elevation)
+			{
+				TriangulateCornerCliffTerraces(
+					right, rightCell, bottom, bottomCell, left, leftCell
+				);
+			}
+			else
+			{
+				TriangulateCornerTerracesCliff(
+					left, leftCell, right, rightCell, bottom, bottomCell
+				);
+			}
+			return;
+		}
+
 
 		AddTriangle(bottom, left, right);
 		AddTriangleColorPerVertex(bottomCell.color, leftCell.color, rightCell.color);
@@ -240,7 +258,7 @@ public class HexMesh : MonoBehaviour
 		Vector3 right, HexCell rightCell
 )
 	{
-		float b = 1f / (rightCell.Elevation - beginCell.Elevation);
+		float b = Math.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
 		Vector3 boundary = Vector3.Lerp(begin, right, b);
 		Color boundaryColor = Color.Lerp(beginCell.color, rightCell.color, b);
 
@@ -267,7 +285,8 @@ public class HexMesh : MonoBehaviour
 	Vector3 right, HexCell rightCell
 )
 	{
-		float b = 1f / (leftCell.Elevation - beginCell.Elevation);
+		float b = Math.Abs(1f / (leftCell.Elevation - beginCell.Elevation));
+
 		Vector3 boundary = Vector3.Lerp(begin, left, b);
 		Color boundaryColor = Color.Lerp(beginCell.color, leftCell.color, b);
 
