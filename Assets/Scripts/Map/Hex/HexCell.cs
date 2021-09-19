@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HexCell : MonoBehaviour
 {
+    public RectTransform uiRect;
     public HexCoordinates coordinates;
-
     public Color color;
 
     [SerializeField]
@@ -23,6 +23,13 @@ public class HexCell : MonoBehaviour
             Vector3 position = transform.localPosition;
             position.y = value * HexMetrics.elevationStep;
             transform.localPosition = position;
+
+            // Because the hex grid canvas is rotated, the labels
+            // have to be moved in the negative Z direction,
+            // instead of the positive Y direction.
+            Vector3 uiPosition = uiRect.localPosition;
+            uiPosition.z = elevation * -HexMetrics.elevationStep;
+            uiRect.localPosition = uiPosition;
         }
     }
 
