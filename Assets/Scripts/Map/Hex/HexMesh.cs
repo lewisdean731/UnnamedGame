@@ -62,10 +62,19 @@ public class HexMesh : MonoBehaviour
 			center + HexMetrics.GetSecondCorner(direction)
 		);
 
-		// Set Colours
-		HexCell neighbor = cell.GetNeighbor(direction) ?? cell; // Use ourselves if no neighbour in direction e.g. border cell
-		Color edgeColor = (cell.color + neighbor.color) * 0.5f;
-		AddTriangleColorPerVertex(cell.color, edgeColor, edgeColor);
+		// Set Colors
+
+		// Use ourselves if no neighbour in direction e.g. border cell
+		HexCell prevNeighbor = cell.GetNeighbor(direction.Previous()) ?? cell;
+		HexCell neighbor = cell.GetNeighbor(direction) ?? cell;
+		HexCell nextNeighbor = cell.GetNeighbor(direction.Next()) ?? cell;
+
+		AddTriangleColorPerVertex(
+			cell.color,
+			(cell.color + prevNeighbor.color + neighbor.color) / 3f,
+			(cell.color + neighbor.color + nextNeighbor.color) / 3f
+		);
+
 		// AddTriangleColor(cell.color);
 	}
 
