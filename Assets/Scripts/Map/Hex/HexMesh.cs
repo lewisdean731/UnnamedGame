@@ -144,7 +144,7 @@ public class HexMesh : MonoBehaviour
 				}
 				else
 				{
-					AddQuad(subdivisions[i], v2, subdivisonQuads[0, 1], v4);
+					AddQuad(subdivisions[i], v2, subdivisonQuads[i, 1], v4);
 					AddQuadColorTwoWayBlend(cell.color, neighbor.color);
 				}
 			}
