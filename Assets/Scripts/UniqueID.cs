@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
 
-// Nabbed from
-// https://answers.unity.com/questions/1780694/how-to-get-some-unique-identifier-for-gameobjects.html
+// Nabbed from https://answers.unity.com/questions/1780694/how-to-get-some-unique-identifier-for-gameobjects.html
 public class UniqueID : MonoBehaviour
 {
     //I would suggest adding some kind of ReadOnly attribute/inspector to this such that you can see it in the inspector but can't edit it directly
     [SerializeField] private string _guid = Guid.NewGuid().ToString();
+
     //If you need to access the ID, use this
     public string guid => _guid;
 

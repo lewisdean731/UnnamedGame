@@ -4,14 +4,13 @@ using UnityEngine.UIElements;
 
 public class UIController : MonoBehaviour
 {
-    GameManager GM;
+    private GameManager GM;
 
     private Label testLabel;
     private ProgressBar progressBar;
     private Button btnTimeScalex05, btnTimeScalex1, btnTimeScalex2, btnTimeScalex3, btnTimeScalex4, btnTimeScalex5;
 
-
-    void Start()
+    private void Start()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
 
@@ -32,7 +31,7 @@ public class UIController : MonoBehaviour
         btnTimeScalex5.clicked += () => { GameManager.timeScale = 5; };
     }
 
-    void Update()
+    private void Update()
     {
         testLabel.text = ((int)Math.Round(GameManager.elapsedTime)).ToString();
         progressBar.value = GameManager.dayProgressPercent;

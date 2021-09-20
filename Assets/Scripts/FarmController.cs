@@ -6,8 +6,10 @@ public class FarmController : MonoBehaviour
 
     public UniqueID uniqueId;
     private string id;
+
     [Range(1, 5)]
     public int level = 1;
+
     [Range(0f, 1f)]
     public float health = 1f;
 
@@ -15,14 +17,13 @@ public class FarmController : MonoBehaviour
     public int suppliesAmmoCap, suppliesFoodCap, suppliesFuelCap, suppliesMaterialCap = 0;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         LoadFarm();
 
         GameEvents.current.onFarmDispatchFood += OnFarmDispatchFood;
 
         InvokeRepeating("UpdateInterval", GameManager.updateIntervalFarm, GameManager.updateIntervalFarm);
-
     }
 
     private void OnDestroy()
@@ -30,7 +31,7 @@ public class FarmController : MonoBehaviour
         GameEvents.current.onFarmDispatchFood -= OnFarmDispatchFood;
     }
 
-    void LoadFarm()
+    private void LoadFarm()
     {
         district = transform.parent.GetComponent<DistrictController>();
 
@@ -42,25 +43,25 @@ public class FarmController : MonoBehaviour
     }
 
     // Invoked every updateTimeInSeconds seconds / Time.timeScale
-    void UpdateInterval()
+    private void UpdateInterval()
     {
         // Produce food
         suppliesFood += (int)Mathf.Round((level * 100 * health) / (GameManager.dayLengthInSeconds / GameManager.updateIntervalFarm));
-        if(suppliesFood > suppliesFoodCap)
+        if (suppliesFood > suppliesFoodCap)
         {
             suppliesFood = suppliesFoodCap;
         }
 
         // When farm >= 1000 food dispatch it to nearest settlement
-        if( suppliesFood >= 1000)
+        if (suppliesFood >= 1000)
         {
             GameEvents.current.FarmReadyToDispatchFood(this, suppliesFood);
         }
     }
 
-    void OnFarmDispatchFood(FarmController farm, int food)
+    private void OnFarmDispatchFood(FarmController farm, int food)
     {
-        if(farm == this)
+        if (farm == this)
         {
             suppliesFood -= food;
         }

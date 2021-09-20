@@ -13,7 +13,7 @@ public class FactionTerritory : MonoBehaviour
         contestedRegions = new List<GameObject>();
     }
 
-    /*	
+    /*
 	void addDistrict(GameObject district)
     {
 		districts.Add(district);
@@ -54,5 +54,4 @@ public class FactionTerritory : MonoBehaviour
 		contestedRegions.Remove(Region);
 	}
 	*/
-
 }

@@ -24,7 +24,7 @@ public class cameraController : MonoBehaviour
     public Vector3 rotateCurrentPosition;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         newPosition = transform.position;
         newRotation = transform.rotation;
@@ -32,7 +32,7 @@ public class cameraController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         HandleMouseInput();
         HandleMovementInput();
@@ -42,7 +42,7 @@ public class cameraController : MonoBehaviour
         cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
     }
 
-    void HandleMouseInput()
+    private void HandleMouseInput()
     {
         // Scroll Wheel Zoom
         if (Input.mouseScrollDelta.y != 0)
@@ -98,7 +98,7 @@ public class cameraController : MonoBehaviour
         }
     }
 
-    void HandleMovementInput()
+    private void HandleMovementInput()
     {
         // Movement
 
@@ -144,9 +144,10 @@ public class cameraController : MonoBehaviour
 
     private void CalcZoom(float zoomValue = 1)
     {
-        // Zoom slower when closer to zoom limits
-        // See https://www.desmos.com/calculator and copy the below
-        // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\ x^{2}\ +\ x\ \right)}{10}
+        // Zoom slower when closer to zoom limits See
+        // https://www.desmos.com/calculator and copy the below
+        // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\
+        // x^{2}\ +\ x\ \right)}{10}
         var maxmin = maxHeight + minHeight;
         var maxmin2 = maxmin * maxmin;
         zoomAmountScaler = (-minHeight - maxmin / maxmin2 * (newZoom.y * newZoom.y) + newZoom.y) / 10;

@@ -21,6 +21,7 @@ public class SettlementController : MonoBehaviour
 
     // Special buildings?
     public int policePresenceLevel;
+
     public int armyPresenceLevel;
     public int hospitalLevel;
     public int schoolLevel;
@@ -36,7 +37,6 @@ public class SettlementController : MonoBehaviour
         GameEvents.current.onSettlementRecieveFood += OnSettlementRecieveFood;
 
         InvokeRepeating("UpdateInterval", GameManager.updateIntervalSettlement, GameManager.updateIntervalSettlement);
-
     }
 
     private void OnDestroy()
@@ -57,12 +57,11 @@ public class SettlementController : MonoBehaviour
     // Invoked every updateTimeInSeconds seconds / Time.timeScale
     private void UpdateInterval()
     {
-
         // Consume food
         suppliesFood = (int)Mathf.Round(suppliesFood - (population / (GameManager.dayLengthInSeconds / updateTimeInSeconds)));
         if (suppliesFood < population * 3)
         {
-           // SettlementLowFood(id);
+            // SettlementLowFood(id);
         }
 
         // Produce money
@@ -70,11 +69,9 @@ public class SettlementController : MonoBehaviour
         GameEvents.current.AlterFactionResourceVal(district.controllingFaction, "money", productionMoney);
     }
 
-
     // Update is called once per frame
     private void Update()
     {
-
     }
 
     private void SettlementLowFood(SettlementController id)
@@ -88,7 +85,6 @@ public class SettlementController : MonoBehaviour
         {
             suppliesFood -= food;
             Debug.Log("Settlement: " + name + " Dispatched " + food + " food supplies");
-
         }
     }
 
@@ -98,7 +94,6 @@ public class SettlementController : MonoBehaviour
         {
             suppliesFood += food;
             Debug.Log("Settlement: " + name + " Recieved " + food + " food supplies");
-
         }
     }
 }

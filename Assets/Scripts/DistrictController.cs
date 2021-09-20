@@ -14,7 +14,7 @@ public class DistrictController : MonoBehaviour
     public string[] tags;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         this.gameObject.AddComponent<UniqueID>();
         uniqueId = this.gameObject.GetComponent<UniqueID>();
@@ -24,8 +24,7 @@ public class DistrictController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void UpdateInterval()
+    private void UpdateInterval()
     {
-
     }
 }

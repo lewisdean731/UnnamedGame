@@ -18,18 +18,15 @@ public class GameManager : MonoBehaviour
     public static int updateIntervalSettlement = 5;
     public static int updateIntervalFarm = 5;
 
-
-
-
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         timeScale = _timeScale;
         Time.timeScale = timeScale;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Time.timeScale = timeScale;
         elapsedTime += Time.deltaTime;
@@ -44,4 +41,3 @@ public class GameManager : MonoBehaviour
         dayProgressPercent = (dayProgress / dayLengthInSeconds) * 100;
     }
 }
-

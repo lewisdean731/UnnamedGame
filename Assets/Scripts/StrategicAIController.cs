@@ -1,11 +1,9 @@
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 public class StrategicAIController : MonoBehaviour
 {
-
-    string[] controlledSettlements = { };
+    private string[] controlledSettlements = { };
 
     // Start is called before the first frame update
     private void Start()
@@ -20,22 +18,21 @@ public class StrategicAIController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 
     private void OnSettlementLowFood(SettlementController settlement)
     {
         Debug.Log("Settlement " + settlement + " Reports low on food!");
 
-        // Work out 
+        // Work out
 
         StartCoroutine(testWaiter(settlement));
     }
 
     // For testing
-    IEnumerator testWaiter(SettlementController settlement)
+    private IEnumerator testWaiter(SettlementController settlement)
     {
         SettlementDispatchFood(settlement, 1000);
 
@@ -48,6 +45,7 @@ public class StrategicAIController : MonoBehaviour
     {
         GameEvents.current.SettlementDispatchFood(settlement, 1000);
     }
+
     private void SettlementRecieveFood(SettlementController settlement, int food)
     {
         GameEvents.current.SettlementRecieveFood(settlement, 1000);

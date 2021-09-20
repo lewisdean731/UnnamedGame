@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FinderUtil : MonoBehaviour
@@ -12,7 +10,7 @@ public class FinderUtil : MonoBehaviour
         Vector3 currentPosition = g.transform.position;
         foreach (SettlementController settlement in settlements)
         {
-            if(settlement.district.controllingFaction == faction)
+            if (settlement.district.controllingFaction == faction)
             {
                 Vector3 directionToTarget = settlement.gameObject.transform.position - currentPosition;
                 float dSqrToTarget = directionToTarget.sqrMagnitude;
@@ -25,6 +23,5 @@ public class FinderUtil : MonoBehaviour
         }
         Debug.Log("Closest Settlement to " + g + " is " + closest);
         return closest;
-
     }
 }

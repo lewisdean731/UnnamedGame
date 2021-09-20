@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class GameEvents : MonoBehaviour
 {
-
     public static GameEvents current;
-
 
     public void Awake()
     {
@@ -15,6 +13,7 @@ public class GameEvents : MonoBehaviour
     // Input
 
     public event Action onMouse0Down;
+
     public void Mouse0Down()
     {
         if (onMouse0Down != null)
@@ -24,6 +23,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action onMouse1Down;
+
     public void Mouse1Down()
     {
         if (onMouse1Down != null)
@@ -32,9 +32,10 @@ public class GameEvents : MonoBehaviour
         }
     }
 
-    // Map 
+    // Map
 
     public event Action<Vector3> onSelectCell;
+
     public void SelectCell(Vector3 position)
     {
         if (onSelectCell != null)
@@ -44,6 +45,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action<HexCell> onCellSelected;
+
     public void CellSelected(HexCell cell)
     {
         if (onCellSelected != null)
@@ -53,6 +55,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action<HexCell> onColorCell;
+
     public void ColorCell(HexCell cell)
     {
         if (onColorCell != null)
@@ -64,6 +67,7 @@ public class GameEvents : MonoBehaviour
     // Settlement
 
     public event Action<SettlementController> onSettlementLowFood;
+
     public void SettlementLowFood(SettlementController settlement)
     {
         if (onSettlementLowFood != null)
@@ -73,6 +77,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action<SettlementController, int> onSettlementDispatchFood;
+
     public void SettlementDispatchFood(SettlementController settlement, int food)
     {
         if (onSettlementDispatchFood != null)
@@ -82,6 +87,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action<SettlementController, int> onSettlementRecieveFood;
+
     public void SettlementRecieveFood(SettlementController settlement, int food)
     {
         if (onSettlementRecieveFood != null)
@@ -114,6 +120,7 @@ public class GameEvents : MonoBehaviour
     // Resources
 
     public event Action<Faction, string, int> onAlterFactionResourceVal;
+
     public void AlterFactionResourceVal(Faction faction, string resource, int amount)
     {
         if (onAlterFactionResourceVal != null)
@@ -121,6 +128,4 @@ public class GameEvents : MonoBehaviour
             onAlterFactionResourceVal(faction, resource, amount);
         }
     }
-
-
 }

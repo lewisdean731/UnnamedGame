@@ -22,10 +22,10 @@ public class SettlementData : ScriptableObject
 
     // Special buildings?
     public int policePresenceLevel;
+
     public int armyPresenceLevel;
     public int hospitalLevel;
     public int schoolLevel;
 
     public string[] tags;
-
 }

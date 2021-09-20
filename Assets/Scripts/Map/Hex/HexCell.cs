@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HexCell : MonoBehaviour
@@ -9,7 +7,7 @@ public class HexCell : MonoBehaviour
     public Color color;
 
     [SerializeField]
-    HexCell[] neighbors;
+    private HexCell[] neighbors;
 
     public int Elevation
     {
@@ -25,16 +23,15 @@ public class HexCell : MonoBehaviour
             position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
             transform.localPosition = position;
 
-            // Because the hex grid canvas is rotated, the labels
-            // have to be moved in the negative Z direction,
-            // instead of the positive Y direction.
+            // Because the hex grid canvas is rotated, the labels have to be
+            // moved in the negative Z direction, instead of the positive Y direction.
             Vector3 uiPosition = uiRect.localPosition;
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
         }
     }
 
-    int elevation;
+    private int elevation;
 
     public Vector3 Position
     {
@@ -53,7 +50,6 @@ public class HexCell : MonoBehaviour
     {
         neighbors[(int)direction] = cell;
         cell.neighbors[(int)direction.Opposite()] = this;
-
     }
 
     public HexEdgeType GetEdgeType(HexDirection direction)
@@ -69,5 +65,4 @@ public class HexCell : MonoBehaviour
             elevation, otherCell.elevation
         );
     }
-
 }
