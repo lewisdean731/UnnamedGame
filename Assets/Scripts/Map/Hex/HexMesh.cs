@@ -393,9 +393,9 @@ public class HexMesh : MonoBehaviour
 	{
 		Vector4 sample = HexMetrics.SampleNoise(position);
 		// We di *2f-1f to allow for positive or negative variations
-		position.x += sample.x * 2f - 1f;
-		position.y += sample.y * 2f - 1f;
-		position.z += sample.z * 2f - 1f;
+		position.x += (sample.x * 2f - 1f) * HexMetrics.cellPerturbStrength;
+		position.y += (sample.y * 2f - 1f) * HexMetrics.cellPerturbStrength;
+		position.z += (sample.z * 2f - 1f) * HexMetrics.cellPerturbStrength;
 		return position;
 	}
 

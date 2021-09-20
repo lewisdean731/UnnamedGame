@@ -28,6 +28,7 @@ public static class HexMetrics
 	public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
 
 	public static Texture2D noiseSource;
+	public const float cellPerturbStrength = 5f;
 
 	public static Vector3 GetFirstCorner(HexDirection direction)
 	{
