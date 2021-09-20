@@ -22,19 +22,27 @@ public class HexCell : MonoBehaviour
             elevation = value;
             Vector3 position = transform.localPosition;
             position.y = value * HexMetrics.elevationStep;
+            position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
             transform.localPosition = position;
 
             // Because the hex grid canvas is rotated, the labels
             // have to be moved in the negative Z direction,
             // instead of the positive Y direction.
             Vector3 uiPosition = uiRect.localPosition;
-            uiPosition.z = elevation * -HexMetrics.elevationStep;
+            uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
         }
     }
 
     int elevation;
 
+    public Vector3 Position
+    {
+        get
+        {
+            return transform.localPosition;
+        }
+    }
 
     public HexCell GetNeighbor(HexDirection direction)
     {

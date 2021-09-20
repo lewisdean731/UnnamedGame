@@ -84,9 +84,9 @@ public class HexMesh : MonoBehaviour
 		Vector3 bridge = HexMetrics.GetBridge(direction);
 		Vector3 v3 = v1 + bridge;
 		Vector3 v4 = v2 + bridge;
-		v3.y = v4.y = neighbor.Elevation * HexMetrics.elevationStep;
+		v3.y = v4.y = neighbor.Position.y;
 
-		if(cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
+		if (cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
         {
 			TriangulateBridgeTerraces(v1, v2, cell, v3, v4, neighbor);
         } 
@@ -100,7 +100,7 @@ public class HexMesh : MonoBehaviour
 		if (direction <= HexDirection.E && nextNeighbor != null)
 		{
 			Vector3 v5 = v2 + HexMetrics.GetBridge(direction.Next());
-			v5.y = nextNeighbor.Elevation * HexMetrics.elevationStep;
+			v5.y = nextNeighbor.Position.y;
 
 			if (cell.Elevation <= neighbor.Elevation)
 			{
@@ -359,6 +359,7 @@ public class HexMesh : MonoBehaviour
 		colors.Add(c3);
 	}
 
+
 	void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
 	{
 		int vertexIndex = vertices.Count;
@@ -373,6 +374,7 @@ public class HexMesh : MonoBehaviour
 		triangles.Add(vertexIndex + 2);
 		triangles.Add(vertexIndex + 3);
 	}
+
 	void AddQuadColorTwoWayBlend(Color c1, Color c2)
 	{
 		colors.Add(c1);
@@ -394,7 +396,7 @@ public class HexMesh : MonoBehaviour
 		Vector4 sample = HexMetrics.SampleNoise(position);
 		// We di *2f-1f to allow for positive or negative variations
 		position.x += (sample.x * 2f - 1f) * HexMetrics.cellPerturbStrength;
-		position.y += (sample.y * 2f - 1f) * HexMetrics.cellPerturbStrength;
+		//position.y += (sample.y * 2f - 1f) * HexMetrics.cellPerturbStrength;
 		position.z += (sample.z * 2f - 1f) * HexMetrics.cellPerturbStrength;
 		return position;
 	}
