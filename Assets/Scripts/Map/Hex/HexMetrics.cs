@@ -27,6 +27,8 @@ public static class HexMetrics
 	public const float horizontalTerraceStepSize = 1f / terraceSteps;
 	public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
 
+	public static Texture2D noiseSource;
+
 	public static Vector3 GetFirstCorner(HexDirection direction)
 	{
 		return corners[(int)direction];
@@ -83,5 +85,10 @@ public static class HexMetrics
 		}
 
 		return HexEdgeType.CLIFF;
+	}
+
+	public static Vector4 SampleNoise(Vector3 position)
+	{
+		return noiseSource.GetPixelBilinear(position.x, position.z);
 	}
 }

@@ -21,11 +21,14 @@ public class HexGrid : MonoBehaviour
 	public Color defaultColor = Color.white;
 	public Color selectedColor = Color.green;
 
+	public Texture2D noiseSource;
+
 
 	void Awake()
 	{
 		gridCanvas = GetComponentInChildren<Canvas>();
 		hexMesh = GetComponentInChildren<HexMesh>();
+		HexMetrics.noiseSource = noiseSource;
 
 
 		cells = new HexCell[height * width];
@@ -37,6 +40,11 @@ public class HexGrid : MonoBehaviour
 				CreateCell(x, z, i++);
 			}
 		}
+	}
+
+	void OnEnable()
+	{
+		HexMetrics.noiseSource = noiseSource;
 	}
 
 	void Start()
