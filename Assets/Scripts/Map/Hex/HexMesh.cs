@@ -116,11 +116,20 @@ public class HexMesh : MonoBehaviour
         Vector3 v4 = v2 + bridge;
         v3.y = v4.y = neighbor.Position.y;
 
-        TriangulateCellBridge(direction, cell, v1, subdivisions, v2, neighbor, bridge, v3, v4);
+        TriangulateCellBridge(direction, cell, v1, subdivisions, v2, neighbor, v3, v4);
         TriangulateCellCorner(direction, cell, v2, neighbor, v4);
     }
 
-    private void TriangulateCellBridge(HexDirection direction, HexCell cell, Vector3 v1, Vector3[] subdivisions, Vector3 v2, HexCell neighbor, Vector3 bridge, Vector3 v3, Vector3 v4)
+    private void TriangulateCellBridge(
+        HexDirection direction, 
+        HexCell cell, 
+        Vector3 v1, 
+        Vector3[] subdivisions, 
+        Vector3 v2, 
+        HexCell neighbor, 
+        Vector3 v3,
+        Vector3 v4
+    )
     {
         if (cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
         {
@@ -149,6 +158,11 @@ public class HexMesh : MonoBehaviour
                     if (i + 1 < HexMetrics.cellSubdivisons)
                     {
                         AddQuad(subdivisions[i], subdivisions[i + 1], subdivisonQuads[i, 0], subdivisonQuads[i + 1, 1]);
+                        AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+                    }
+                    else if (i + 1 == HexMetrics.cellSubdivisons && HexMetrics.cellSubdivisons == 1) // Edge case for subdivs = 1
+                    {
+                        AddQuad(subdivisions[i], v2, subdivisonQuads[i, 0], subdivisonQuads[i, 1]);
                         AddQuadColorTwoWayBlend(cell.color, neighbor.color);
                     }
                     else
