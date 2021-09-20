@@ -56,23 +56,52 @@ public class HexMesh : MonoBehaviour
 
 	void TriangulateCellPart(HexDirection direction, HexCell cell)
     {
-		Vector3 center = cell.transform.localPosition;
-
 		// Create solid centre
+		Vector3 center = cell.transform.localPosition;
 		Vector3 v1 = center + HexMetrics.GetFirstSolidCorner(direction);
 		Vector3 v2 = center + HexMetrics.GetSecondSolidCorner(direction);
-		AddTriangle(center, v1, v2);
 
-		AddTriangleColor(cell.color);
+		// Subdivisions
+		Vector3[] subdivisons = new Vector3[HexMetrics.cellSubdivisons];
+		if (HexMetrics.cellSubdivisons > 0)
+		{
+			subdivisons[0] = Vector3.Lerp(v1, v2, 1f / (HexMetrics.cellSubdivisons + 1f));
+
+			AddTriangle(center, v1, (HexMetrics.cellSubdivisons > 0 ? subdivisons[0] : v2));
+			AddTriangleColor(cell.color);
+
+			for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
+			{
+				subdivisons[i] = Vector3.Lerp(v1, v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+			}
+			for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
+			{
+				if (i + 1 < HexMetrics.cellSubdivisons)
+				{
+					AddTriangle(center, subdivisons[i], subdivisons[i + 1]);
+					AddTriangleColor(cell.color);
+				}
+				else
+				{
+					AddTriangle(center, subdivisons[i], v2);
+					AddTriangleColor(cell.color);
+				}
+			}
+		}
+		else
+		{
+			AddTriangle(center, v1, v2);
+			AddTriangleColor(cell.color);
+		}
 
 		if (direction <= HexDirection.SE)
 		{
-			TriangulateCellPartConnection(direction, cell, v1, v2);
+			TriangulateCellPartConnection(direction, cell, v1, subdivisons, v2);
 		}
 	}
 
 	void TriangulateCellPartConnection(
-		HexDirection direction, HexCell cell, Vector3 v1, Vector3 v2
+		HexDirection direction, HexCell cell, Vector3 v1, Vector3[] subdivisions, Vector3 v2
 	)
 	{
 		HexCell neighbor = cell.GetNeighbor(direction);
@@ -86,14 +115,58 @@ public class HexMesh : MonoBehaviour
 		Vector3 v4 = v2 + bridge;
 		v3.y = v4.y = neighbor.Position.y;
 
+		// Subdivisions
+		Vector3[,] subdivisonQuads = new Vector3[HexMetrics.cellSubdivisons , 2];
+
+		Vector3 e3 = Vector3.Lerp(v3, v4, 1f / 3f);
+		Vector3 e4 = Vector3.Lerp(v3, v4, 2f / 3f);
+
+
+		if (HexMetrics.cellSubdivisons > 0)
+		{
+			subdivisonQuads[0, 0] = Vector3.Lerp(v3, v4, 1f / (HexMetrics.cellSubdivisons + 1f));
+			subdivisonQuads[0, 1] = Vector3.Lerp(v3, v4, 2f / (HexMetrics.cellSubdivisons + 1f));
+
+			AddQuad(v1, subdivisions[0], v3, subdivisonQuads[0, 0]);
+			AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+
+			for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
+			{
+				subdivisonQuads[i, 0] = Vector3.Lerp(v3, v4, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+				subdivisonQuads[i, 1] = Vector3.Lerp(v3, v4, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+			}
+			for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
+			{
+				if (i + 1 < HexMetrics.cellSubdivisons)
+				{
+					AddQuad(subdivisions[i], subdivisions[i+1], subdivisonQuads[i, 0], subdivisonQuads[i+1, 1]);
+					AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+				}
+				else
+				{
+					AddQuad(subdivisions[i], v2, subdivisonQuads[0, 1], v4);
+					AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+				}
+			}
+		}
+		else
+		{
+			AddQuad(v1, v2, v3, v4);
+			AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+		}
+
+
+
+
+
 		if (cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
         {
 			TriangulateBridgeTerraces(v1, v2, cell, v3, v4, neighbor);
         } 
 		else
         {
-			AddQuad(v1, v2, v3, v4);
-			AddQuadColorTwoWayBlend(cell.color, neighbor.color);
+			//AddQuad(v1, v2, v3, v4);
+			//AddQuadColorTwoWayBlend(cell.color, neighbor.color);
         }
 
 		HexCell nextNeighbor = cell.GetNeighbor(direction.Next());

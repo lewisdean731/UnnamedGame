@@ -32,6 +32,8 @@ public static class HexMetrics
 	public const float cellPerturbStrength = 5f;
 	public const float elevationPerturbStrength = 1.5f;
 
+	public const int cellSubdivisons = 2;
+
 	public static Vector3 GetFirstCorner(HexDirection direction)
 	{
 		return corners[(int)direction];
