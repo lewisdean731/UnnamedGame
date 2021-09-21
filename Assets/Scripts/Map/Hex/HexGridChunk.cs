@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class HexGridChunk : MonoBehaviour
 {
 
-	HexCell[] cells;
+	public HexCell[] cells;
 
 	HexMesh hexMesh;
 	Canvas gridCanvas;
@@ -22,10 +22,23 @@ public class HexGridChunk : MonoBehaviour
 		hexMesh.Triangulate(cells);
 	}
 
+	void LateUpdate()
+	{
+		hexMesh.Triangulate(cells);
+		enabled = false;
+	}
+
 	public void AddCell(int index, HexCell cell)
 	{
 		cells[index] = cell;
+		cell.chunk = this;
 		cell.transform.SetParent(transform, false);
 		cell.uiRect.SetParent(gridCanvas.transform, false);
+	}
+
+	public void Refresh()
+	{
+		// Because HGM doesn't do anything else can use its enabled state to signal that an update is needed
+		enabled = true;
 	}
 }

@@ -4,11 +4,28 @@ public class HexCell : MonoBehaviour
 {
     public RectTransform uiRect;
     public HexCoordinates coordinates;
-    public Color color;
+    public Color Color
+    {
+        get
+        {
+            return color;
+        }
+        set
+        {
+            if (color == value)
+            {
+                return;
+            }
+            color = value;
+            Refresh();
+        }
+    }
+    Color color;
 
     [SerializeField]
     private HexCell[] neighbors;
 
+    public HexGridChunk chunk;
     public int Elevation
     {
         get
@@ -17,6 +34,11 @@ public class HexCell : MonoBehaviour
         }
         set
         {
+            if (elevation == value)
+            {
+                return;
+            }
+
             elevation = value;
             Vector3 position = transform.localPosition;
             position.y = value * HexMetrics.elevationStep;
@@ -28,10 +50,12 @@ public class HexCell : MonoBehaviour
             Vector3 uiPosition = uiRect.localPosition;
             uiPosition.z = -position.y;
             uiRect.localPosition = uiPosition;
+
+            Refresh();
         }
     }
-
-    private int elevation;
+    // Avoid skipping computation the first time the elevation is set to zero
+    int elevation = int.MinValue;
 
     public Vector3 Position
     {
@@ -64,5 +88,24 @@ public class HexCell : MonoBehaviour
         return HexMetrics.GetEdgeType(
             elevation, otherCell.elevation
         );
+    }
+
+    void Refresh()
+    {
+        if (chunk) // Only refresh the chunk if it has been assigned.
+
+        {
+            chunk.Refresh();
+
+            // Refresh neighbor chunks
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                HexCell neighbor = neighbors[i];
+                if (neighbor != null && neighbor.chunk != chunk)
+                {
+                    neighbor.chunk.Refresh();
+                }
+            }
+        }
     }
 }

@@ -84,7 +84,7 @@ public class HexGrid : MonoBehaviour
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
         cell.transform.localPosition = position;
 
-        cell.color = defaultColor;
+        cell.Color = defaultColor;
 
         // Set Neighbour Directions
         if (x > 0)
@@ -154,6 +154,6 @@ public class HexGrid : MonoBehaviour
 
     public void ColorCell(HexCell cell, Color color)
     {
-        cell.color = color;
+        cell.Color = color;
     }
 }
