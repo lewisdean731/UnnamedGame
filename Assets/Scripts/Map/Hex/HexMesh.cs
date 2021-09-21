@@ -119,7 +119,7 @@ public class HexMesh : MonoBehaviour
     }
 
     private void TriangulateCellBridge(
-        HexDirection direction, 
+        HexDirection direction,
         HexCell cell,
         EdgeVertices hev1,
         HexCell neighbor,
@@ -128,50 +128,57 @@ public class HexMesh : MonoBehaviour
     {
         if (cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
         {
-            TriangulateBridgeTerraces(hev1.v1, hev1.v2, cell, hev2.v1, hev2.v2, neighbor);
+            TriangulateEdgeTerraces(hev1, cell, hev2, neighbor);
         }
         else
         {
-            // Subdivisions
-            Vector3[,] subdivisonQuads = new Vector3[HexMetrics.cellSubdivisons, 2];
+            TriangulateEdgeStrip(hev1, cell.color, hev2, neighbor.color);
+        }
+    }
 
-            if (HexMetrics.cellSubdivisons > 0)
+    private void TriangulateEdgeStrip(
+    EdgeVertices e1, Color c1,
+    EdgeVertices e2, Color c2
+)
+    {
+        Vector3[,] subdivisonQuads = new Vector3[HexMetrics.cellSubdivisons, 2];
+
+        if (HexMetrics.cellSubdivisons > 0)
+        {
+            subdivisonQuads[0, 0] = Vector3.Lerp(e2.v1, e2.v2, 1f / (HexMetrics.cellSubdivisons + 1f));
+            subdivisonQuads[0, 1] = Vector3.Lerp(e2.v1, e2.v2, 2f / (HexMetrics.cellSubdivisons + 1f));
+
+            AddQuad(e1.v1, e1.vx[0], e2.v1, subdivisonQuads[0, 0]);
+            AddQuadColorTwoWayBlend(c1, c2);
+
+            for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
             {
-                subdivisonQuads[0, 0] = Vector3.Lerp(hev2.v1, hev2.v2, 1f / (HexMetrics.cellSubdivisons + 1f));
-                subdivisonQuads[0, 1] = Vector3.Lerp(hev2.v1, hev2.v2, 2f / (HexMetrics.cellSubdivisons + 1f));
-
-                AddQuad(hev1.v1, hev1.vx[0], hev2.v1, subdivisonQuads[0, 0]);
-                AddQuadColorTwoWayBlend(cell.color, neighbor.color);
-
-                for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
+                subdivisonQuads[i, 0] = Vector3.Lerp(e2.v1, e2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+                subdivisonQuads[i, 1] = Vector3.Lerp(e2.v1, e2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+            }
+            for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
+            {
+                if (i + 1 < HexMetrics.cellSubdivisons)
                 {
-                    subdivisonQuads[i, 0] = Vector3.Lerp(hev2.v1, hev2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
-                    subdivisonQuads[i, 1] = Vector3.Lerp(hev2.v1, hev2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+                    AddQuad(e1.vx[i], e1.vx[i + 1], subdivisonQuads[i, 0], subdivisonQuads[i + 1, 1]);
+                    AddQuadColorTwoWayBlend(c1, c2);
                 }
-                for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
+                else if (i + 1 == HexMetrics.cellSubdivisons && HexMetrics.cellSubdivisons == 1) // Edge case for subdivs = 1
                 {
-                    if (i + 1 < HexMetrics.cellSubdivisons)
-                    {
-                        AddQuad(hev1.vx[i], hev1.vx[i + 1], subdivisonQuads[i, 0], subdivisonQuads[i + 1, 1]);
-                        AddQuadColorTwoWayBlend(cell.color, neighbor.color);
-                    }
-                    else if (i + 1 == HexMetrics.cellSubdivisons && HexMetrics.cellSubdivisons == 1) // Edge case for subdivs = 1
-                    {
-                        AddQuad(hev1.vx[i], hev1.v2, subdivisonQuads[i, 0], subdivisonQuads[i, 1]);
-                        AddQuadColorTwoWayBlend(cell.color, neighbor.color);
-                    }
-                    else
-                    {
-                        AddQuad(hev1.vx[i], hev1.v2, subdivisonQuads[i, 1], hev2.v2);
-                        AddQuadColorTwoWayBlend(cell.color, neighbor.color);
-                    }
+                    AddQuad(e1.vx[i], e1.v2, subdivisonQuads[i, 0], subdivisonQuads[i, 1]);
+                    AddQuadColorTwoWayBlend(c1, c2);
+                }
+                else
+                {
+                    AddQuad(e1.vx[i], e1.v2, subdivisonQuads[i, 1], e2.v2);
+                    AddQuadColorTwoWayBlend(c1, c2);
                 }
             }
-            else
-            {
-                AddQuad(hev1.v1, hev1.v2, hev2.v1, hev2.v2);
-                AddQuadColorTwoWayBlend(cell.color, neighbor.color);
-            }
+        }
+        else
+        {
+            AddQuad(e1.v1, e1.v2, e2.v1, e2.v2);
+            AddQuadColorTwoWayBlend(c1, c2);
         }
     }
 
@@ -206,32 +213,26 @@ public class HexMesh : MonoBehaviour
         }
     }
 
-    private void TriangulateBridgeTerraces(
-        Vector3 beginLeft, Vector3 beginRight, HexCell beginCell,
-        Vector3 endLeft, Vector3 endRight, HexCell endCell
+    private void TriangulateEdgeTerraces(
+        EdgeVertices begin, HexCell beginCell,
+        EdgeVertices end, HexCell endCell
     )
     {
-        Vector3 v3 = HexMetrics.TerraceLerpBetweenPoints(beginLeft, endLeft, 1);
-        Vector3 v4 = HexMetrics.TerraceLerpBetweenPoints(beginRight, endRight, 1);
+        EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
         Color c2 = HexMetrics.TerraceLerpBetweenColors(beginCell.color, endCell.color, 1);
 
-        AddQuad(beginLeft, beginRight, v3, v4);
-        AddQuadColorTwoWayBlend(beginCell.color, c2);
+        TriangulateEdgeStrip(begin, beginCell.color, e2, c2);
 
         for (int i = 2; i < HexMetrics.terraceSteps; i++)
         {
-            Vector3 v1 = v3;
-            Vector3 v2 = v4;
+            EdgeVertices e1 = e2;
             Color c1 = c2;
-            v3 = HexMetrics.TerraceLerpBetweenPoints(beginLeft, endLeft, i);
-            v4 = HexMetrics.TerraceLerpBetweenPoints(beginRight, endRight, i);
+            e2 = EdgeVertices.TerraceLerp(begin, end, i);
             c2 = HexMetrics.TerraceLerpBetweenColors(beginCell.color, endCell.color, i);
-            AddQuad(v1, v2, v3, v4);
-            AddQuadColorTwoWayBlend(c1, c2);
+            TriangulateEdgeStrip(e1, c1, e2, c2);
         }
 
-        AddQuad(v3, v4, endLeft, endRight);
-        AddQuadColorTwoWayBlend(c2, endCell.color);
+        TriangulateEdgeStrip(e2, c2, end, endCell.color);
     }
 
     private void TriangulateCorner(
