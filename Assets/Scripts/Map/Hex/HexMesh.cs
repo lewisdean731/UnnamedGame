@@ -6,9 +6,10 @@ using UnityEngine;
 public class HexMesh : MonoBehaviour
 {
     private Mesh hexMesh;
-    private List<Vector3> vertices;
-    private List<int> triangles;
-    private List<Color> colors;
+    static List<Vector3> vertices = new List<Vector3>();
+    static List<Color> colors = new List<Color>();
+    static List<int> triangles = new List<int>();
+
 
     private MeshCollider meshCollider;
 
@@ -16,9 +17,6 @@ public class HexMesh : MonoBehaviour
     {
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
         hexMesh.name = "Hex Mesh";
-        vertices = new List<Vector3>();
-        triangles = new List<int>();
-        colors = new List<Color>();
 
         meshCollider = gameObject.AddComponent<MeshCollider>();
     }
