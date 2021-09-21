@@ -55,53 +55,49 @@ public class HexMesh : MonoBehaviour
 
     private void TriangulateCellPart(HexDirection direction, HexCell cell)
     {
-        // Create solid centre
+        // Create solid edge vertices
         Vector3 center = cell.transform.localPosition;
-        Vector3 v1 = center + HexMetrics.GetFirstSolidCorner(direction);
-        Vector3 v2 = center + HexMetrics.GetSecondSolidCorner(direction);
+        EdgeVertices hev1 = new EdgeVertices(
+            center + HexMetrics.GetFirstSolidCorner(direction),
+            center + HexMetrics.GetSecondSolidCorner(direction)
+        );
 
         // Subdivisions
         Vector3[] subdivisons = new Vector3[HexMetrics.cellSubdivisons];
         if (HexMetrics.cellSubdivisons > 0)
         {
-            subdivisons[0] = Vector3.Lerp(v1, v2, 1f / (HexMetrics.cellSubdivisons + 1f));
-
-            AddTriangle(center, v1, (HexMetrics.cellSubdivisons > 0 ? subdivisons[0] : v2));
+            AddTriangle(center, hev1.v1, (HexMetrics.cellSubdivisons > 0 ? hev1.vx[0] : hev1.v2));
             AddTriangleColor(cell.color);
 
-            for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
-            {
-                subdivisons[i] = Vector3.Lerp(v1, v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
-            }
             for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
             {
                 if (i + 1 < HexMetrics.cellSubdivisons)
                 {
-                    AddTriangle(center, subdivisons[i], subdivisons[i + 1]);
+                    AddTriangle(center, hev1.vx[i], hev1.vx[i + 1]);
                     AddTriangleColor(cell.color);
                 }
                 else
                 {
-                    AddTriangle(center, subdivisons[i], v2);
+                    AddTriangle(center, hev1.vx[i], hev1.v2);
                     AddTriangleColor(cell.color);
                 }
             }
         }
         else
         {
-            AddTriangle(center, v1, v2);
+            AddTriangle(center, hev1.v1, hev1.v2);
             AddTriangleColor(cell.color);
         }
 
         // Triangulate cell connections on NE, E, SE directions
         if (direction <= HexDirection.SE)
         {
-            TriangulateCellConnection(direction, cell, v1, subdivisons, v2);
+            TriangulateCellConnection(direction, cell, hev1);
         }
     }
 
     private void TriangulateCellConnection(
-        HexDirection direction, HexCell cell, Vector3 v1, Vector3[] subdivisions, Vector3 v2
+        HexDirection direction, HexCell cell, EdgeVertices hev1
     )
     {
         // Don't make connections to non-existent neighbors
@@ -112,28 +108,27 @@ public class HexMesh : MonoBehaviour
         }
 
         Vector3 bridge = HexMetrics.GetBridge(direction);
-        Vector3 v3 = v1 + bridge;
-        Vector3 v4 = v2 + bridge;
-        v3.y = v4.y = neighbor.Position.y;
+        bridge.y = neighbor.Position.y - cell.Position.y;
+        EdgeVertices hev2 = new EdgeVertices(
+            hev1.v1 + bridge,
+            hev1.v2 + bridge
+        );
 
-        TriangulateCellBridge(direction, cell, v1, subdivisions, v2, neighbor, v3, v4);
-        TriangulateCellCorner(direction, cell, v2, neighbor, v4);
+        TriangulateCellBridge(direction, cell, hev1, neighbor, hev2);
+        TriangulateCellCorner(direction, cell, hev1, neighbor, hev2);
     }
 
     private void TriangulateCellBridge(
         HexDirection direction, 
-        HexCell cell, 
-        Vector3 v1, 
-        Vector3[] subdivisions, 
-        Vector3 v2, 
-        HexCell neighbor, 
-        Vector3 v3,
-        Vector3 v4
+        HexCell cell,
+        EdgeVertices hev1,
+        HexCell neighbor,
+        EdgeVertices hev2
     )
     {
         if (cell.GetEdgeType(direction) == HexEdgeType.SLOPE_TERRACE)
         {
-            TriangulateBridgeTerraces(v1, v2, cell, v3, v4, neighbor);
+            TriangulateBridgeTerraces(hev1.v1, hev1.v2, cell, hev2.v1, hev2.v2, neighbor);
         }
         else
         {
@@ -142,71 +137,71 @@ public class HexMesh : MonoBehaviour
 
             if (HexMetrics.cellSubdivisons > 0)
             {
-                subdivisonQuads[0, 0] = Vector3.Lerp(v3, v4, 1f / (HexMetrics.cellSubdivisons + 1f));
-                subdivisonQuads[0, 1] = Vector3.Lerp(v3, v4, 2f / (HexMetrics.cellSubdivisons + 1f));
+                subdivisonQuads[0, 0] = Vector3.Lerp(hev2.v1, hev2.v2, 1f / (HexMetrics.cellSubdivisons + 1f));
+                subdivisonQuads[0, 1] = Vector3.Lerp(hev2.v1, hev2.v2, 2f / (HexMetrics.cellSubdivisons + 1f));
 
-                AddQuad(v1, subdivisions[0], v3, subdivisonQuads[0, 0]);
+                AddQuad(hev1.v1, hev1.vx[0], hev2.v1, subdivisonQuads[0, 0]);
                 AddQuadColorTwoWayBlend(cell.color, neighbor.color);
 
                 for (int i = 1; i < HexMetrics.cellSubdivisons; i++)
                 {
-                    subdivisonQuads[i, 0] = Vector3.Lerp(v3, v4, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
-                    subdivisonQuads[i, 1] = Vector3.Lerp(v3, v4, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+                    subdivisonQuads[i, 0] = Vector3.Lerp(hev2.v1, hev2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
+                    subdivisonQuads[i, 1] = Vector3.Lerp(hev2.v1, hev2.v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
                 }
                 for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
                 {
                     if (i + 1 < HexMetrics.cellSubdivisons)
                     {
-                        AddQuad(subdivisions[i], subdivisions[i + 1], subdivisonQuads[i, 0], subdivisonQuads[i + 1, 1]);
+                        AddQuad(hev1.vx[i], hev1.vx[i + 1], subdivisonQuads[i, 0], subdivisonQuads[i + 1, 1]);
                         AddQuadColorTwoWayBlend(cell.color, neighbor.color);
                     }
                     else if (i + 1 == HexMetrics.cellSubdivisons && HexMetrics.cellSubdivisons == 1) // Edge case for subdivs = 1
                     {
-                        AddQuad(subdivisions[i], v2, subdivisonQuads[i, 0], subdivisonQuads[i, 1]);
+                        AddQuad(hev1.vx[i], hev1.v2, subdivisonQuads[i, 0], subdivisonQuads[i, 1]);
                         AddQuadColorTwoWayBlend(cell.color, neighbor.color);
                     }
                     else
                     {
-                        AddQuad(subdivisions[i], v2, subdivisonQuads[i, 1], v4);
+                        AddQuad(hev1.vx[i], hev1.v2, subdivisonQuads[i, 1], hev2.v2);
                         AddQuadColorTwoWayBlend(cell.color, neighbor.color);
                     }
                 }
             }
             else
             {
-                AddQuad(v1, v2, v3, v4);
+                AddQuad(hev1.v1, hev1.v2, hev2.v1, hev2.v2);
                 AddQuadColorTwoWayBlend(cell.color, neighbor.color);
             }
         }
     }
 
-    private void TriangulateCellCorner(HexDirection direction, HexCell cell, Vector3 v2, HexCell neighbor, Vector3 v4)
+    private void TriangulateCellCorner(HexDirection direction, HexCell cell, EdgeVertices hev1, HexCell neighbor, EdgeVertices hev2)
     {
         HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
         if (direction <= HexDirection.E && nextNeighbor != null)
         {
-            Vector3 v5 = v2 + HexMetrics.GetBridge(direction.Next());
+            Vector3 v5 = hev1.v2 + HexMetrics.GetBridge(direction.Next());
             v5.y = nextNeighbor.Position.y;
 
             if (cell.Elevation <= neighbor.Elevation)
             {
                 if (cell.Elevation <= nextNeighbor.Elevation)
                 {
-                    TriangulateCorner(v2, cell, v4, neighbor, v5, nextNeighbor);
+                    TriangulateCorner(hev1.v2, cell, hev2.v2, neighbor, v5, nextNeighbor);
                 }
                 else
                 {
                     // Calculate counterclockwise to maintain orientation
-                    TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                    TriangulateCorner(v5, nextNeighbor, hev1.v2, cell, hev2.v2, neighbor);
                 }
             }
             else if (neighbor.Elevation <= nextNeighbor.Elevation)
             {
-                TriangulateCorner(v4, neighbor, v5, nextNeighbor, v2, cell);
+                TriangulateCorner(hev2.v2, neighbor, v5, nextNeighbor, hev1.v2, cell);
             }
             else
             {
-                TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                TriangulateCorner(v5, nextNeighbor, hev1.v2, cell, hev2.v2, neighbor);
             }
         }
     }
