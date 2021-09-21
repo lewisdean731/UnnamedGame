@@ -3,6 +3,7 @@ using UnityEngine;
 public class cameraController : MonoBehaviour
 {
     public Transform cameraTransform;
+    public Transform swivelTransform;
 
     public float minHeight;
     public float maxHeight;
@@ -12,10 +13,11 @@ public class cameraController : MonoBehaviour
     public float movementSpeedFast;
     public float movementTime;
     public float rotationAmount;
-    public Vector3 zoomAmount;
+    public float zoomAmount;
 
     public Vector3 newPosition;
     public Quaternion newRotation;
+    public Quaternion newSwivelRotation;
     public Vector3 newZoom;
 
     public Vector3 dragStartPosition;
@@ -28,6 +30,7 @@ public class cameraController : MonoBehaviour
     {
         newPosition = transform.position;
         newRotation = transform.rotation;
+        newSwivelRotation = swivelTransform.localRotation;
         newZoom = cameraTransform.localPosition;
     }
 
@@ -39,6 +42,7 @@ public class cameraController : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
+        swivelTransform.localRotation = Quaternion.Lerp(swivelTransform.localRotation, newSwivelRotation, Time.deltaTime * movementTime);
         cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, newZoom, Time.deltaTime * movementTime);
     }
 
@@ -148,25 +152,25 @@ public class cameraController : MonoBehaviour
         // https://www.desmos.com/calculator and copy the below
         // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\
         // x^{2}\ +\ x\ \right)}{10}
-        var maxmin = maxHeight + minHeight;
+        var maxmin = (maxHeight * 1.2f) + minHeight;
         var maxmin2 = maxmin * maxmin;
-        zoomAmountScaler = (-minHeight - maxmin / maxmin2 * (newZoom.y * newZoom.y) + newZoom.y) / 10;
+        zoomAmountScaler = (minHeight + maxmin / maxmin2 * (newZoom.z * newZoom.z) - newZoom.z) / 10;
 
-        if (zoomAmountScaler < 0.05f)
+        if (zoomAmountScaler < 0.5f)
         {
-            zoomAmountScaler = 0.05f;
+            zoomAmountScaler = 0.5f;
         }
 
         // Allow scale out
-        if (newZoom.y + 1 < maxHeight && zoomValue < 0)
+        if (newZoom.z + 1 > maxHeight && zoomValue < 0)
         {
-            newZoom += (zoomValue * zoomAmountScaler) * zoomAmount;
+            newZoom.z += (zoomValue * zoomAmountScaler) * zoomAmount;
         }
 
         // Allow scale in
-        else if (newZoom.y - 1 > minHeight && zoomValue > 0)
+        else if (newZoom.z - 1 < minHeight && zoomValue > 0)
         {
-            newZoom += (zoomValue * zoomAmountScaler) * zoomAmount;
+            newZoom.z += (zoomValue * zoomAmountScaler) * zoomAmount;
         }
     }
 }
