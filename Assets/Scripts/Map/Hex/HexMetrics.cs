@@ -15,7 +15,7 @@ public static class HexMetrics
             new Vector3(0f, 0f, outerRadius)
     };
 
-    public const float solidFactor = 0.75f;
+    public const float solidFactor = 0.8f;
     public const float blendFactor = 1f - solidFactor;
 
     public const float elevationStep = 3f;
@@ -27,10 +27,13 @@ public static class HexMetrics
 
     public static Texture2D noiseSource;
     public const float noiseScale = 0.003f;
-    public const float cellPerturbStrength = 3f;
+    public const float cellPerturbStrength = 2f;
     public const float elevationPerturbStrength = 1.5f;
 
     public const int cellSubdivisons = 2;
+
+    public const int chunkSizeX = 5;
+    public const int chunkSizeZ = 5;
 
     public static Vector3 GetFirstCorner(HexDirection direction)
     {

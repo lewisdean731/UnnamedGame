@@ -51,6 +51,5 @@ public class HexMapEditor : MonoBehaviour
     private void OnCellSelected(HexCell cell)
     {
         EditCell(cell);
-        hexGrid.Refresh();
     }
 }
