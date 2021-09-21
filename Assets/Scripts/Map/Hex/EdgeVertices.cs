@@ -17,4 +17,19 @@ public struct EdgeVertices
             vx[i] = Vector3.Lerp(v1, v2, (i + 1f) / (HexMetrics.cellSubdivisons + 1f));
         }
     }
+
+    public static EdgeVertices TerraceLerp(
+    EdgeVertices a, EdgeVertices b, int step)
+    {
+        EdgeVertices result;
+        result.v1 = HexMetrics.TerraceLerpBetweenPoints(a.v1, b.v1, step);
+        result.v2 = HexMetrics.TerraceLerpBetweenPoints(a.v2, b.v2, step);
+        result.vx = new Vector3[HexMetrics.cellSubdivisons];
+
+        for (int i = 0; i < HexMetrics.cellSubdivisons; i++)
+        {
+            result.vx[i] = HexMetrics.TerraceLerpBetweenPoints(a.vx[i], b.vx[i], step);
+        }
+        return result;
+    }
 }
