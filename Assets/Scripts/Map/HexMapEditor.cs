@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class HexMapEditor : MonoBehaviour
 {
@@ -9,10 +10,13 @@ public class HexMapEditor : MonoBehaviour
     private Color activeColor;
     private int activeElevation;
 
+    bool applyColor = true;
+    bool applyElevation = false;
+
     private void Awake()
     {
-        SelectColor(0);
-        SetElevation(0);
+        activeColor = colors[0];
+        activeElevation = 0;
     }
 
     private void Start()
@@ -29,7 +33,17 @@ public class HexMapEditor : MonoBehaviour
 
     public void SelectColor(int index)
     {
-        activeColor = colors[index];
+        applyColor = index >= 0; // bool
+        if (applyColor)
+        {
+            activeColor = colors[index];
+        }
+    }
+
+    public void SetApplyElevation()
+    {
+        applyColor = false;
+        applyElevation = true;
     }
 
     public void SetElevation(float elevation)
@@ -37,10 +51,21 @@ public class HexMapEditor : MonoBehaviour
         activeElevation = (int)elevation;
     }
 
+    public void SetApplyElevation(bool toggle)
+    {
+        applyElevation = toggle;
+    }
+
     public void EditCell(HexCell cell)
     {
-        cell.Color = activeColor;
-        cell.Elevation = activeElevation;
+        if (applyColor)
+        {
+            cell.Color = activeColor;
+        }
+        if (applyElevation)
+        {
+            cell.Elevation = activeElevation;
+        }
     }
 
     private void OnColorCell(HexCell cell)
