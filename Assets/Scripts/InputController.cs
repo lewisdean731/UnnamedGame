@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.EventSystems;
 public class InputController : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -10,7 +10,11 @@ public class InputController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        HandleMouseInput();
+        //Make sure mouse is NOT over a UI element
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            HandleMouseInput();
+        }
     }
 
     private void HandleMouseInput()
