@@ -155,13 +155,13 @@ public class cameraController : MonoBehaviour
         // https://www.desmos.com/calculator and copy the below
         // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\
         // x^{2}\ +\ x\ \right)}{10}
-        var maxmin = maxHeight + minHeight;
+        var maxmin = (maxHeight * 1.2f) + minHeight;
         var maxmin2 = maxmin * maxmin;
         zoomAmountScaler = (minHeight + maxmin / maxmin2 * (newZoom.z * newZoom.z) - newZoom.z) / 10;
 
-        if (zoomAmountScaler < 0.5f)
+        if (zoomAmountScaler < 0.8f)
         {
-            zoomAmountScaler = 0.5f;
+            zoomAmountScaler = 0.8f;
         }
 
         // Allow scale out
