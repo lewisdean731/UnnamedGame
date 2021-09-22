@@ -8,6 +8,9 @@ public class cameraController : MonoBehaviour
     public float minHeight;
     public float maxHeight;
     public float zoomAmountScaler;
+    public float zoomSwivelScaler;
+    public float minHeightSwivelDegrees;
+    public float maxHeightSwivelDegrees;
 
     public float movementSpeed;
     public float movementSpeedFast;
@@ -152,7 +155,7 @@ public class cameraController : MonoBehaviour
         // https://www.desmos.com/calculator and copy the below
         // \frac{\left(-n-\left(\frac{\left(a+n\right)}{\left(a+n\right)^{2}}\right)\cdot\
         // x^{2}\ +\ x\ \right)}{10}
-        var maxmin = (maxHeight * 1.2f) + minHeight;
+        var maxmin = maxHeight + minHeight;
         var maxmin2 = maxmin * maxmin;
         zoomAmountScaler = (minHeight + maxmin / maxmin2 * (newZoom.z * newZoom.z) - newZoom.z) / 10;
 
@@ -172,5 +175,13 @@ public class cameraController : MonoBehaviour
         {
             newZoom.z += (zoomValue * zoomAmountScaler) * zoomAmount;
         }
+
+        // Transition to top-down view when zoomed out
+        float minSwivelHeight = minHeight * 2;
+        float maxSwivelHeight = maxHeight * 0.6f;
+        zoomSwivelScaler = Mathf.Clamp01(newZoom.z / (maxSwivelHeight + minSwivelHeight));
+        float angle = Mathf.Lerp(minHeightSwivelDegrees, maxHeightSwivelDegrees, zoomSwivelScaler);
+        newSwivelRotation = Quaternion.Euler(angle, 0, 0);
+        
     }
 }
