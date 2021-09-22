@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class cameraController : MonoBehaviour
 {
+    public HexGrid hexGrid;
+
     public Transform cameraTransform;
     public Transform swivelTransform;
 
@@ -84,7 +86,7 @@ public class cameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
 
-                newPosition = transform.position + dragStartPosition - dragCurrentPosition;
+                newPosition = ClampPosition(transform.position + dragStartPosition - dragCurrentPosition);
             }
         }
 
@@ -127,6 +129,8 @@ public class cameraController : MonoBehaviour
         {
             newPosition += (transform.right * moveSpeed);
         }
+
+        newPosition = ClampPosition(newPosition);
 
         // Rotation
         if (Input.GetKey(KeyCode.Q))
@@ -183,5 +187,21 @@ public class cameraController : MonoBehaviour
         float angle = Mathf.Lerp(minHeightSwivelDegrees, maxHeightSwivelDegrees, zoomSwivelScaler);
         newSwivelRotation = Quaternion.Euler(angle, 0, 0);
         
+    }
+
+    private Vector3 ClampPosition(Vector3 position)
+    {
+        // Clamp position to prevent camera leaving map borders
+        float xMax =
+            (hexGrid.chunkCountX * HexMetrics.chunkSizeX - 0.5f) *
+            (2f * HexMetrics.innerRadius);
+        position.x = Mathf.Clamp(position.x, 0f, xMax);
+
+        float zMax =
+            (hexGrid.chunkCountZ * HexMetrics.chunkSizeZ - 1) *
+            (1.5f * HexMetrics.outerRadius);
+        position.z = Mathf.Clamp(position.z, 0f, zMax);
+
+        return position;
     }
 }
