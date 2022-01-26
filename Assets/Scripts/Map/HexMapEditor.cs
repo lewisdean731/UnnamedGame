@@ -7,6 +7,8 @@ public class HexMapEditor : MonoBehaviour
 
     public HexGrid hexGrid;
 
+    int brushSize;
+
     private Color activeColor;
     private int activeElevation;
 
@@ -56,16 +58,53 @@ public class HexMapEditor : MonoBehaviour
         applyElevation = toggle;
     }
 
+    public void SetBrushSize(float size)
+    {
+        brushSize = (int)size;
+    }
+
+    public void SetShowUI(bool visible)
+    {
+        hexGrid.ShowUI(visible);
+    }
+
+
+
     public void EditCell(HexCell cell)
     {
-        if (applyColor)
+        if (cell)
         {
-            cell.Color = activeColor;
+            if (applyColor)
+            {
+                cell.Color = activeColor;
+            }
+            if (applyElevation)
+            {
+                cell.Elevation = activeElevation;
+            }
         }
-        if (applyElevation)
+    }
+
+    public void EditCells(HexCell center)
+    {
+        int centerX = center.coordinates.X;
+        int centerZ = center.coordinates.Z;
+
+        for (int r = 0, z = centerZ - brushSize; z <= centerZ; z++, r++)
         {
-            cell.Elevation = activeElevation;
+            for (int x = centerX - r; x <= centerX + brushSize; x++)
+            {
+                EditCell(hexGrid.GetCell(new HexCoordinates(x, z)));
+            }
         }
+        for (int r = 0, z = centerZ + brushSize; z > centerZ; z--, r++)
+        {
+            for (int x = centerX - brushSize; x <= centerX + r; x++)
+            {
+                EditCell(hexGrid.GetCell(new HexCoordinates(x, z)));
+            }
+        }
+
     }
 
     private void OnColorCell(HexCell cell)
@@ -75,6 +114,6 @@ public class HexMapEditor : MonoBehaviour
 
     private void OnCellSelected(HexCell cell)
     {
-        EditCell(cell);
+        EditCells(cell);
     }
 }

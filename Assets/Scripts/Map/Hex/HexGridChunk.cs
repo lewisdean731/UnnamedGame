@@ -15,6 +15,7 @@ public class HexGridChunk : MonoBehaviour
 		hexMesh = GetComponentInChildren<HexMesh>();
 
 		cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
+		ShowUI(false);
 	}
 
 	void Start()
@@ -41,4 +42,10 @@ public class HexGridChunk : MonoBehaviour
 		// Because HGM doesn't do anything else can use its enabled state to signal that an update is needed
 		enabled = true;
 	}
+
+	public void ShowUI(bool visible)
+	{
+		gridCanvas.gameObject.SetActive(visible);
+	}
+
 }
